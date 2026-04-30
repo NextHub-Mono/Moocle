@@ -1,13 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=JetBrains+Mono:wght@500&display=swap');
 
 :root {
-    --bg-black: #050505;        /* 真の黒 */
-    --card-bg: #0f0f0f;         /* 濃い灰色 */
-    --border-gray: #222222;     /* 境界線 */
-    --text-pure: #ffffff;
-    --text-muted: #888888;      /* 補助テキスト用の灰色 */
-    --accent-white: #ffffff;
-    --glass: rgba(255, 255, 255, 0.02);
+    --bg: #000000;
+    --surface: #0a0a0a;
+    --border: #1a1a1a;
+    --border-hover: #333333;
+    --text-high: #ffffff;
+    --text-mid: #a0a0a0;
+    --text-low: #4a4a4a;
+    --accent: #ffffff;
 }
 
 * {
@@ -18,37 +19,38 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-black);
-    color: var(--text-pure);
-    line-height: 1.6;
-    letter-spacing: -0.01em;
+    background-color: var(--bg);
+    color: var(--text-high);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* 背景装飾：色彩を抜き、光の強弱のみで表現 */
+/* 背景装飾：NextHubらしい微細なグリッド */
 .visual-wrapper {
     position: fixed;
     inset: 0;
     z-index: -1;
-    background: radial-gradient(circle at 50% -20%, #1a1a1a 0%, var(--bg-black) 70%);
+    overflow: hidden;
 }
 
-.blob {
+.grid-overlay {
     position: absolute;
-    width: 600px;
-    height: 400px;
-    background: #ffffff;
-    filter: blur(120px);
-    border-radius: 50%;
-    opacity: 0.03; /* 極めて薄い光 */
-    animation: pulse 15s infinite alternate;
+    inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+    opacity: 0.3;
 }
 
-.blob-1 { top: -10%; left: 10%; }
-.blob-2 { bottom: 10%; right: 10%; animation-delay: -7s; }
-
-@keyframes pulse {
-    from { transform: scale(1) translate(0, 0); }
-    to { transform: scale(1.1) translate(-20px, 40px); }
+.glow-light {
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60vw;
+    height: 40vh;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
 }
 
 /* ナビゲーション */
@@ -56,19 +58,24 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 8%;
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-gray);
+    padding: 1.5rem 5%;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100;
 }
 
 .logo {
     font-family: 'JetBrains Mono', monospace;
-    font-weight: 800;
-    font-size: 1.2rem;
-    letter-spacing: -1px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+}
+
+.logo span {
+    color: var(--text-low);
+    font-weight: 400;
 }
 
 .nav-links {
@@ -78,68 +85,71 @@ nav {
 }
 
 .nav-links a {
+    color: var(--text-mid);
     text-decoration: none;
-    color: var(--text-muted);
     font-size: 0.85rem;
-    font-weight: 500;
-    transition: color 0.3s;
+    transition: 0.2s;
 }
 
 .nav-links a:hover {
-    color: var(--text-pure);
+    color: var(--text-high);
 }
 
 .nav-demo-link {
-    border: 1px solid var(--border-gray);
+    background: var(--text-high);
+    color: var(--bg) !important;
     padding: 0.5rem 1rem;
-    border-radius: 6px;
-    background: var(--glass);
+    border-radius: 4px;
+    font-weight: 600;
 }
 
-/* ヒーローセクション */
+/* ヒーロー */
 #hero {
-    padding: 10rem 8% 6rem;
+    padding: 12rem 5% 8rem;
     text-align: center;
 }
 
-.badge {
-    display: inline-block;
-    padding: 0.4rem 1rem;
-    border: 1px solid var(--border-gray);
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-mid);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
     border-radius: 100px;
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-h1 {
-    font-size: clamp(3.5rem, 10vw, 6.5rem);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 0.95;
     margin-bottom: 2rem;
 }
 
-.gradient-text {
-    color: var(--text-pure);
+.status-badge .dot {
+    width: 6px;
+    height: 6px;
+    background: #00ff00;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ff00;
 }
 
-.highlight {
-    color: var(--text-muted); /* ここを灰色にすることでモダンな対比を表現 */
+.hero-title {
+    font-size: clamp(3.5rem, 12vw, 7rem);
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    margin-bottom: 2rem;
+}
+
+.text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-low);
 }
 
 .hero-sub {
     font-size: 1.1rem;
-    color: var(--text-muted);
-    max-width: 550px;
-    margin: 0 auto 3.5rem;
-    font-weight: 400;
+    color: var(--text-mid);
+    max-width: 600px;
+    margin: 0 auto 3rem;
 }
 
-/* ボタン：モノトーンのコントラスト */
 .cta-area {
     display: flex;
     gap: 1rem;
@@ -148,77 +158,106 @@ h1 {
 
 .cta-btn {
     padding: 1rem 2rem;
-    border-radius: 8px;
-    text-decoration: none;
+    font-size: 0.9rem;
     font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: 0.3s;
 }
 
-.cta-btn.main {
-    background: var(--text-pure);
-    color: var(--bg-black);
+.cta-btn.primary {
+    background: var(--text-high);
+    color: var(--bg);
 }
 
-.cta-btn.main:hover {
-    transform: translateY(-2px);
-    filter: brightness(0.9);
+.cta-btn.secondary {
+    border: 1px solid var(--border);
+    color: var(--text-high);
 }
 
-.cta-btn.outline {
-    border: 1px solid var(--border-gray);
-    color: var(--text-pure);
-    background: transparent;
+.cta-btn.secondary:hover {
+    border-color: var(--text-mid);
+    background: rgba(255,255,255,0.05);
 }
 
-.cta-btn.outline:hover {
-    background: var(--border-gray);
+/* カードセクション */
+#features {
+    padding: 4rem 5% 10rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-/* フィーチャーカード：ミニマル・グリッド */
+.section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-low);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    padding: 0 8% 10rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1px; /* 境界線を細く見せる */
+    background: var(--border);
+    border: 1px solid var(--border);
 }
 
-.glass-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-gray);
-    padding: 2.5rem;
-    border-radius: 16px;
-    transition: border-color 0.4s;
+.feature-card {
+    background: var(--bg);
+    padding: 3rem 2rem;
+    position: relative;
+    transition: 0.3s;
 }
 
-.glass-card:hover {
-    border-color: #444444;
+.feature-card:hover {
+    background: var(--surface);
+}
+
+.card-num {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-low);
 }
 
 .icon-box {
     font-size: 1.5rem;
-    margin-bottom: 2rem;
-    color: var(--text-pure);
+    margin-bottom: 1.5rem;
+    color: var(--text-high);
 }
 
-.glass-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
+.feature-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
     font-weight: 600;
 }
 
-.glass-card p {
-    color: var(--text-muted);
+.feature-card p {
     font-size: 0.9rem;
+    color: var(--text-mid);
     line-height: 1.7;
 }
 
 /* フッター */
 footer {
-    padding: 4rem 8%;
-    border-top: 1px solid var(--border-gray);
+    padding: 6rem 5%;
+    border-top: 1px solid var(--border);
     text-align: center;
-    color: var(--text-muted);
-    font-size: 0.8rem;
+}
+
+.footer-logo {
     font-family: 'JetBrains Mono', monospace;
+    font-weight: 900;
+    color: var(--text-low);
+    margin-bottom: 1rem;
+}
+
+footer p {
+    font-size: 0.75rem;
+    color: var(--text-low);
 }
