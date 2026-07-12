@@ -18,6 +18,9 @@ Electronをベースに構築されており、余計な装飾を削ぎ落とし
 - ⚡ **Lightweight Performance**: 不要な機能を排除し、Electronのパワーを最大限に活かした軽快な動作。
 - 🖱️ **Enhanced Native Menu**: 操作をスピーディーに行えるよう独自にカスタマイズされた右クリックメニュー。
 
+## 📸 インターフェース (Screenshots)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/52547d04-048f-430d-a272-e918b313d30c" />
+
 ## 🛠 セットアップ (Installation)
 
 開発環境で実行、またはビルドする場合は以下の手順に従ってください。
