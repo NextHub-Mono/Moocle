@@ -22,7 +22,7 @@ Electronをベースに構築されており、余計な装飾を削ぎ落とし
 
 | 新しいタブ | ブラウジング画面 |
 | :--- | :--- |
-| ![NewTab]((https://raw.githubusercontent.com/NextHub-Mono/MCBrowser/refs/heads/main/image.png))) | (このようなUIになっています) |
+| ![NewTab]((https://i.imgur.com/4MuMnb1.png)))) | (このようなUIになっています) |
 
 ## 🛠 セットアップ (Installation)
 
