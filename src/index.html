@@ -4,84 +4,148 @@
   <meta charset="UTF-8">
   <title>MCBrowser</title>
   <link rel="stylesheet" href="style.css">
-  <meta http-equiv="Content-Security-Policy"
-content="default-src 'self' https: data: blob:;
-script-src 'self';
-style-src 'self' 'unsafe-inline';
-img-src 'self' https: data:;
-font-src 'self' https:;
-connect-src https:;">
-
 </head>
-<body>
+<!-- 初期状態でテーマクラスとフォントサイズクラスを付与しておきます -->
+<body class="theme-dark chrome-tabs font-medium">
 
-<!-- ===== タイトルバー ===== -->
-<div id="titlebar">
-  <div id="tabs"></div>
-  <button id="newTabBtn">＋</button>
-</div>
+  <!-- ブラウザ全体の最背面に表示する壁紙画像用コンテナ -->
+  <div id="browser-bg"></div>
 
-<!-- ===== ナビ ===== -->
-<div id="nav">
-  <button class="nav-btn" id="backBtn">←</button>
-  <button class="nav-btn small" id="backHistoryBtn">▼</button>
-  <button class="nav-btn" id="forwardBtn">→</button>
-  <button class="nav-btn" id="homeBtn">🏠</button>
-  <input id="urlbar" placeholder="検索または URL を入力">
-  <div id="searchSuggestions" class="hidden"></div>
-  <button class="nav-btn" id="bookmarkBtn">⭐</button>
-  <button id="settingsBtn">⚙</button>
-</div>
+  <!-- ブラウザのヘッダー領域 -->
+  <header id="browser-header">
+    
+    <!-- ウィンドウをドラッグして移動させるための透明なエリア（最背面に配置） -->
+    <div id="window-drag-area"></div>
 
-<!-- ===== ブックマークバー ===== -->
-<div id="bookmarkBar"></div>
+    <!-- 上段：タブバー ＆ アプリ操作ボタン -->
+    <div class="header-top-row">
+      <!-- タブコンテナ -->
+      <div id="tabs-container" class="no-drag">
+        <div id="tabs">
+          <!-- renderer.js から動的にタブ要素が追加されます -->
+        </div>
+        <button id="newTabBtn" title="新しいタブを追加">+</button>
+      </div>
 
-<!-- ===== 履歴 ===== -->
-<div id="historyPopup" class="hidden"></div>
+      <!-- Google Chrome風のウィンドウ操作ボタン群 -->
+      <div id="window-controls" class="no-drag">
+        <button id="win-minimize-btn" class="win-btn" title="最小化">&#128469;&#xFE0E;</button>
+        <button id="win-maximize-btn" class="win-btn" title="最大化">&#128470;&#xFE0E;</button>
+        <button id="win-close-btn" class="win-btn win-btn-close" title="閉じる">&#128473;&#xFE0E;</button>
+      </div>
+    </div>
 
-<!-- ===== 表示領域 ===== -->
-<div id="view-container"></div>
+    <!-- 下段：ナビゲーションバー -->
+    <div class="header-bottom-row no-drag">
+      <div class="nav-buttons">
+        <button id="backBtn" class="nav-btn" title="戻る">←</button>
+        <button id="forwardBtn" class="nav-btn" title="進む">→</button>
+        <button id="reloadBtn" class="nav-btn" title="再読み込み">↻</button>
+        <button id="homeBtn" class="nav-btn" title="ホーム（新規タブページ）">⌂</button>
+        <button id="backHistoryBtn" class="nav-btn" title="履歴">🕒</button>
+      </div>
 
-<!-- ===== 設定サイドバー ===== -->
-<div id="settingsSidebar" class="settings-sidebar">
-  <div class="settings-header">
-    <span>⚙ 設定</span>
-    <button id="closeSettingsBtn">✕</button>
-  </div>
+      <!-- URL入力欄 -->
+      <div class="urlbar-wrapper">
+        <input type="text" id="urlbar" placeholder="検索キーワードまたはURLを入力" autocomplete="off">
+        <button id="bookmarkBtn" title="このページをブックマーク">★</button>
+      </div>
 
-  <div class="settings-content">
-    <label class="setting-item">
-      <input type="checkbox" id="toggleBookmarkBar" checked>
-      ブックマークバーを表示
-    </label>
+      <div class="action-buttons">
+        <button id="settingsBtn" class="nav-btn" title="設定を開く">⚙</button>
+      </div>
+    </div>
 
-    <label class="setting-item">
-      <input type="checkbox" id="toggleTabScroll" checked>
-      タブの横スクロールを有効
-    </label>
+    <!-- ブックマークバー領域 -->
+    <div id="bookmarkBar" class="no-drag">
+      <!-- renderer.js から動的にブックマークが挿入されます -->
+    </div>
 
-    <label class="setting-item">
-      検索エンジン
-      <select id="searchEngine">
-        <option value="google">Google</option>
-        <option value="bing">Bing</option>
-        <option value="duck">DuckDuckGo</option>
-      </select>
-    </label>
+    <!-- 履歴ポップアップ -->
+    <div id="historyPopup" class="hidden no-drag"></div>
 
-    <label class="setting-item">
-      背景画像
-      <input type="file" id="bgUpload" accept="image/*">
-    </label>
+  </header>
 
-    <label class="setting-item">
-      NewTab HTML
-      <input type="file" id="newTabUpload" accept=".html">
-    </label>
-    <button id="resetSettingsBtn" class="reset-btn">設定をリセット</button>
-  </div>
-</div>
+  <!-- メインコンテンツ領域 -->
+  <main id="content-area">
+    <!-- メインプロセスで制御される Web コンテンツがこの位置に重なります -->
+  </main>
 
-<script src="renderer.js"></script>
+  <!-- 設定サイドバー（右側からスライドイン） -->
+  <aside id="settingsSidebar" class="no-drag">
+    <div class="sidebar-header">
+      <h3>ブラウザ設定</h3>
+      <button id="closeSettingsBtn">✕</button>
+    </div>
+    
+    <div class="sidebar-content">
+      <div class="setting-group">
+        <label>ユーザーインターフェース</label>
+        <div class="setting-item">
+          <input type="checkbox" id="toggleBookmarkBar" checked>
+          <span>ブックマークバーを表示する</span>
+        </div>
+        <div class="setting-item">
+          <input type="checkbox" id="toggleTabScroll" checked>
+          <span>タブのスクロールバーを有効化</span>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <label for="searchEngine">既定の検索エンジン (12種)</label>
+        <select id="searchEngine">
+          <option value="google">Google</option>
+          <option value="startpage">Startpage</option>
+          <option value="brave">Brave Search</option>
+          <option value="vivaldi">Bing (Vivaldi)</option>
+          <option value="coccoc">Cốc Cốc</option>
+          <option value="konqueror">Yahoo! (Konqueror)</option>
+          <option value="tor">DuckDuckGo (Tor)</option>
+          <option value="srware">DuckDuckGo (SRWare Iron)</option>
+          <option value="firefox">Google (Firefox)</option>
+          <option value="chromium">Google (Chromium)</option>
+          <option value="floorp">Google (Floorp)</option>
+          <option value="opera">Google (Opera)</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label for="themeSelect">テーマスキン</label>
+        <select id="themeSelect">
+          <option value="dark">ステルスダーク (推奨)</option>
+          <option value="light">ライトモード</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label for="tabShapeSelect">タブの形状デザイン</label>
+        <select id="tabShapeSelect">
+          <option value="chrome">Chrome風（台形モダン）</option>
+          <option value="square">スクエア（シャープミニマル）</option>
+        </select>
+      </div>
+
+      <!-- フォントサイズ変更の連動用セレクトボックス -->
+      <div class="setting-group">
+        <label for="fontSizeSelect">UIフォントサイズ</label>
+        <select id="fontSizeSelect">
+          <option value="small">小</option>
+          <option value="medium" selected>中</option>
+          <option value="large">大</option>
+        </select>
+      </div>
+
+      <div class="setting-group">
+        <label>ブラウザ背景スキン（透過用）</label>
+        <input type="file" id="bgUpload" accept="image/*">
+      </div>
+
+      <div class="setting-group">
+        <button id="resetSettingsBtn" class="danger-btn">閲覧履歴・キャッシュの初期化</button>
+      </div>
+    </div>
+  </aside>
+
+<script src="renderer.js" defer></script>
 </body>
 </html>
